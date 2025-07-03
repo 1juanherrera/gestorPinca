@@ -1,5 +1,4 @@
-// src/models/Item.js
-const db = require('../db/connection'); // Importa la conexión a la DB
+const db = require('../db/connection');
 
 class Item {
   // Para obtener todos los ítems

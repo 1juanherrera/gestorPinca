@@ -1,3 +1,4 @@
+import { Squares } from "../components/squares";
 import { Table } from "../components/Table"
 import { useItems } from "../hooks/useItems";
 
@@ -7,16 +8,16 @@ export const Inventario = () => {
     return (
         <div className="ml-65 p-5">
             
-            <div className="flex items-center justify-center mb-4 gap-6 mt-8">
+            <div className="flex items-center justify-center mb-4 gap-6 mt-2">
                 <button 
                     onClick={handleProducto} 
                     className={`
-                        px-6 py-3 rounded-lg font-semibold text-sm uppercase tracking-wide
+                        px-4 py-2 rounded-lg font-semibold text-xs uppercase tracking-wide
                         transition-all duration-200 transform hover:scale-105 
-                        shadow-lg hover:shadow-xl
+                        shadow-lg hover:shadow-xl cursor-pointer
                         ${item === 'PRODUCTO' 
                             ? 'bg-blue-700 text-white' 
-                            : 'bg-blue-500 text-white hover:bg-blue-600'
+                            : 'bg-gray-500 text-white hover:bg-blue-600'
                         }
                     `}
                 >
@@ -26,25 +27,35 @@ export const Inventario = () => {
                 <button 
                     onClick={handleItemMateria} 
                     className={`
-                        px-6 py-3 rounded-lg font-semibold text-sm uppercase tracking-wide
+                        px-4 py-2 rounded-lg font-semibold text-xs uppercase tracking-wide
                         transition-all duration-200 transform hover:scale-105
-                        shadow-lg hover:shadow-xl
+                        shadow-lg hover:shadow-xl cursor-pointer
                         ${item === 'MATERIA PRIMA' 
-                            ? 'bg-emerald-700 text-white' 
-                            : 'bg-emerald-500 text-white hover:bg-emerald-600'
+                            ? 'bg-blue-700 text-white' 
+                            : 'bg-gray-500 text-white hover:bg-blue-600'
                         }
-                    `}
-                >
+                    `}>
                     Materia Prima
                 </button>
+                <button 
+                    onClick={handleItemMateria} 
+                    className={`
+                        px-4 py-2 rounded-lg font-semibold text-xs uppercase tracking-wide
+                        transition-all duration-200 transform hover:scale-105
+                        shadow-lg hover:shadow-xl cursor-pointer
+                        ${item === 'MATERIA PRIMA' 
+                            ? 'bg-blue-700 text-white' 
+                            : 'bg-gray-500 text-white hover:bg-blue-600'
+                        }
+                    `}>
+                    Agregar Materia Prima
+                </button> 
             </div>
+            <Squares productos={productos} />
 
-            {/* Indicador visual del filtro activo */}
-            <div className="mb-2 text-center">
+            <div className="mb-2 mt-2 text-center">
                 <span className="text-sm text-gray-600">
-                    <span className={`ml-1 font-semibold ${
-                        item === 'PRODUCTO' ? 'text-blue-600' : 'text-emerald-600'
-                    }`}>
+                    <span className="ml-1 font-semibold text-blue-600">
                         {item === 'PRODUCTO' ? 'PRODUCTOS' : 'MATERIA PRIMA'}
                     </span>
                 </span>

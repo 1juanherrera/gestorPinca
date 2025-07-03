@@ -7,11 +7,11 @@ export const Table = ({ productos, loading, error, filteredProducts }) => {
     if (!productos || productos.length === 0) return <p>No se encontraron productos.</p>;
 
     return (
-        <div className="max-h-125 overflow-y-auto rounded-lg text-xs">
+        <div className="max-h-100 overflow-y-auto rounded-lg text-xs">
             <table className="w-full bg-neutral-300 table-auto border-0">
                 <thead className="sticky top-0 bg-neutral-200 text-neutral-800">
                     <tr>
-                        <th className="border border-neutral-100 text-sm px-4 py-2 text-left whitespace-nowrap w-120">NOMBRE</th>
+                        <th className="border  border-neutral-100 text-sm px-4 py-2 text-left whitespace-nowrap w-120">NOMBRE</th>
                         <th className="border border-neutral-100 text-sm px-4 py-2 text-center whitespace-nowrap w-60">TIPO</th>
                         <th className="border border-neutral-100 text-sm px-4 py-2 text-center whitespace-nowrap w-40">CANTIDAD</th>
                         <th className="border border-neutral-100 text-sm px-4 py-2 text-center whitespace-nowrap w-32">ACCIONES</th>
