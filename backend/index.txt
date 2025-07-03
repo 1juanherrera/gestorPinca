@@ -1,0 +1,19 @@
+gestorpinca/
+├── node_modules/         # Módulos de Node.js instalados por npm (generado automáticamente)
+├── package.json          # Metadatos del proyecto y dependencias
+├── .env                  # Variables de entorno (puertos, secretos, etc.)
+├── .gitignore            # Archivos y carpetas a ignorar por Git (ej. node_modules/, .env, pinca.db)
+└── src/                  # Código fuente de tu aplicación
+    ├── app.js            # Punto de entrada principal de tu aplicación Express
+    ├── config/           # Configuraciones globales
+    │   └── config.js     # Configuración de puerto, entorno, etc.
+    ├── db/               # Todo lo relacionado con la base de datos
+    │   ├── connection.js # Lógica para conectar a SQLite
+    │   |── migrations/   # Scripts para crear/actualizar tablas (si usas ORM o esquemas complejos)
+    |   └── pinca.db      # Tu archivo de base de datos SQLite dentro de 'src/db/'
+    ├── models/           # Definiciones de modelos de datos (cómo se ven tus 'items')
+    │   └── Item.js       # Modelo para 'item_general' (puede ser simple o usar un ORM)
+    ├── controllers/      # Lógica de negocio y manejo de solicitudes (¿qué hacer con los datos?)
+    │   └── itemController.js # Funciones que manejan las solicitudes HTTP para 'items'
+    └── routes/           # Definición de rutas API (URLs y a qué controlador llaman)
+        └── itemRoutes.js # Rutas para operaciones CRUD de 'items' (ej. /api/items)
