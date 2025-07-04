@@ -1,42 +1,107 @@
-import { FaTrash, FaEdit   } from "react-icons/fa";
+import { FaTrash, FaEdit } from "react-icons/fa";
 
 export const Table = ({ productos, loading, error, filteredProducts }) => {
 
-    if (loading) return <p>Cargando productos...</p>;
-    if (error) return <p>Error al cargar productos: {error}</p>;
-    if (!productos || productos.length === 0) return <p>No se encontraron productos.</p>;
-
-    return (
-        <div className="max-h-100 overflow-y-auto rounded-lg text-xs">
-            <table className="w-full bg-neutral-300 table-auto border-0">
-                <thead className="sticky top-0 bg-neutral-200 text-neutral-800">
-                    <tr>
-                        <th className="border  border-neutral-100 text-sm px-4 py-2 text-left whitespace-nowrap w-120">NOMBRE</th>
-                        <th className="border border-neutral-100 text-sm px-4 py-2 text-center whitespace-nowrap w-60">TIPO</th>
-                        <th className="border border-neutral-100 text-sm px-4 py-2 text-center whitespace-nowrap w-40">CANTIDAD</th>
-                        <th className="border border-neutral-100 text-sm px-4 py-2 text-center whitespace-nowrap w-32">ACCIONES</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredProducts.map(producto => (
-                        <tr key={producto.id} className="hover:bg-neutral-400">
-                            <td className="border border-neutral-100 px-2 py-1 whitespace-nowrap">{producto.nombre}</td>
-                            <td className="border border-neutral-100 px-2 py-1 whitespace-nowrap w-24 text-center">{producto.tipo}</td>
-                            <td className="border border-neutral-100 px-2 py-1 whitespace-nowrap w-20 text-center">{producto.cantidad}</td>
-                            <td className="border border-neutral-100 px-2 py-1 whitespace-nowrap w-32">
-                                <div className="flex gap-1 justify-center">
-                                    <button className="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600 cursor-pointer">
-                                        <FaEdit  />
-                                    </button>
-                                    <button className="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-800 cursor-pointer">
-                                        <FaTrash />
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+    if (loading) return (
+        <div className="flex justify-center items-center p-8">
+            <p className="text-gray-600 text-xs">Cargando productos...</p>
         </div>
     );
-};
+    
+    if (error) return (
+        <div className="flex justify-center items-center p-8">
+            <p className="text-red-600 text-xs">Error al cargar productos: {error}</p>
+        </div>
+    );
+    
+    if (!productos || productos.length === 0) return (
+        <div className="flex justify-center items-center p-8">
+            <p className="text-gray-600 text-xs">No se encontraron productos.</p>
+        </div>
+    );
+
+    const handleEdit = (producto) => {
+        console.log('Editar producto:', producto);
+    };
+
+    const handleDelete = (producto) => {
+        console.log('Eliminar producto:', producto);
+    };
+
+    return (
+        <div className="overflow-hidden rounded-lg border border-gray-200">
+            <div className="max-h-100 overflow-y-auto">
+                <table className="w-full">
+                    <thead className="sticky top-0 bg-gray-700 text-white uppercase">
+                        <tr>
+                            <th className="px-4 py-2 text-center text-xs font-medium w-15">ID</th>
+                            <th className="px-4 py-2 text-center text-xs font-medium w-25">Codigo</th>
+                            <th className="px-4 py-2 text-left text-xs font-medium">Nombre</th>
+                            <th className="px-4 py-2 text-center text-xs font-medium w-42">Tipo</th>
+                            <th className="px-4 py-2 text-center text-xs font-medium w-24">Cantidad</th>
+                            <th className="px-4 py-2 text-center text-xs font-medium w-32">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-gray-100">
+                        {filteredProducts.map((producto, index) => (
+                            <tr 
+                                key={producto.id} 
+                                className={`border-b border-gray-300 hover:bg-gray-200 transition-colors ${
+                                    index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                                }`}
+                            >
+                                <td className="px-2 text-center ">
+                                    <span className="text-xs font-medium text-gray-900">
+                                        {producto.id}
+                                    </span>
+                                </td>
+                                <td className="px-2 text-center ">
+                                    <span className="text-xs  font-medium text-gray-900">
+                                        {producto.codigo}
+                                    </span>
+                                </td>
+                                <td className="px-2">
+                                    <span className="text-xs font-medium text-gray-900">
+                                        {producto.nombre}
+                                    </span>
+                                </td>
+                                <td className="px-2 text-center">
+                                    <span className={`px-3 py-1 text-xs font-medium rounded-md ${
+                                        producto.tipo === 'PRODUCTO' 
+                                            ? 'bg-blue-100 text-blue-800 border border-blue-200' 
+                                            : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                                    }`}>
+                                        {producto.tipo}
+                                    </span>
+                                </td>
+                                <td className="px-2 text-center">
+                                    <span className="text-xs font-semibold text-gray-900">
+                                        {producto.cantidad}
+                                    </span>
+                                </td>
+                                <td className="px-2 py-1">
+                                    <div className="flex justify-center gap-2">
+                                        <button 
+                                            onClick={() => handleEdit(producto)}
+                                            className="p-2 text-white rounded-md transition-colors bg-gray-500 hover:bg-gray-800 cursor-pointer"
+                                            title="Editar"
+                                        >
+                                            <FaEdit size={14} />
+                                        </button>
+                                        <button 
+                                            onClick={() => handleDelete(producto)}
+                                            className="p-2 bg-red-500 text-white hover:bg-red-800 rounded-md transition-colors cursor-pointer"
+                                            title="Eliminar"
+                                        >
+                                            <FaTrash size={14} />
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    )
+}

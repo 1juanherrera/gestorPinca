@@ -4,6 +4,7 @@ import { useApi } from './useApi';
 export const useItems = () => {
 
     const [ item, setItem ] = useState('PRODUCTO');
+    const [ searchTerm, setSearchTerm ] = useState('');
 
     const { data: productos, loading, error } = useApi('/items');
 
@@ -14,7 +15,23 @@ export const useItems = () => {
         setItem('PRODUCTO')
     }
 
-    const filteredProducts = productos?.filter(producto => producto.tipo === item) || [];
+    const handleSearch = (term) => {
+        setSearchTerm(term);
+    }
+
+    const clearSearch = () => {
+        setSearchTerm('');
+    }
+
+    const filteredProducts = productos?.filter(producto => {
+        const matchesType = producto.tipo === item;
+        const matchesSearch = searchTerm === '' || 
+            producto.nombre.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        return matchesType && matchesSearch;
+    }) || [];
+
+    const lengthProducts = productos?.length || 0;
 
     return {
         productos,
@@ -23,6 +40,10 @@ export const useItems = () => {
         item,
         filteredProducts,
         handleItemMateria,
-        handleProducto
+        handleProducto,
+        lengthProducts,
+        searchTerm,
+        handleSearch,
+        clearSearch
     }
 }

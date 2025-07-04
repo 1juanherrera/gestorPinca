@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 export const Dashboard = () => {
   return (
-    <div className="w-3xs bg-neutral-600 text-white p-4 m-2 rounded-lg shadow-lg h-155 fixed">
+    <div className="w-3xs bg-neutral-600 text-white p-4 m-2 rounded-lg shadow-lg h-[97%] fixed">
       <ul className="mt-5 space-y-2">
         <li className="w-full">
           <NavLink

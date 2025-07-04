@@ -1,0 +1,94 @@
+-- SCRIPT PARA SQLite - PASTA ESMALTE CAOBA
+
+-- PASO 1: Verificar datos antes de cambiar
+SELECT 
+    'VERIFICACIÓN INICIAL' as paso,
+    id, nombre, codigo, tipo
+FROM item_general 
+WHERE nombre = 'PASTA ESMALTE CAOBA';
+
+-- PASO 2: Ver qué relaciones existen en formulaciones
+SELECT 
+    'RELACIONES COMO PRODUCTO' as rol,
+    f.id as formulacion_id,
+    f.producto_id,
+    f.materia_prima_id,
+    f.cantidad,
+    f.unidad,
+    ig_materia.nombre as materia_prima_usada
+FROM formulaciones f
+JOIN item_general ig_materia ON f.materia_prima_id = ig_materia.id
+WHERE f.producto_id = 26;
+
+SELECT 
+    'RELACIONES COMO MATERIA PRIMA' as rol,
+    f.id as formulacion_id,
+    f.producto_id,
+    f.materia_prima_id,
+    f.cantidad,
+    f.unidad,
+    ig_producto.nombre as producto_que_usa
+FROM formulaciones f
+JOIN item_general ig_producto ON f.producto_id = ig_producto.id
+WHERE f.materia_prima_id = 45;
+
+-- PASO 3: Verificar si hay autoreferencias que se crearían
+SELECT 
+    'VERIFICACIÓN AUTOREFERENCIA' as paso,
+    COUNT(*) as posibles_autoreferencias
+FROM formulaciones 
+WHERE producto_id = 26 AND materia_prima_id = 45;
+
+-- PASO 4: Eliminar autoreferencias si existen
+DELETE FROM formulaciones 
+WHERE producto_id = 26 AND materia_prima_id = 45;
+
+-- PASO 5: Actualizar las referencias en formulaciones
+UPDATE formulaciones 
+SET materia_prima_id = 26
+WHERE materia_prima_id = 45;
+
+-- PASO 6: Verificar que no se crearon autoreferencias problemáticas
+SELECT 
+    'VERIFICACIÓN POST-ACTUALIZACIÓN' as paso,
+    COUNT(*) as autoreferencias_creadas
+FROM formulaciones 
+WHERE producto_id = 26 AND materia_prima_id = 26;
+
+-- PASO 7: Eliminar autoreferencias si se crearon
+DELETE FROM formulaciones 
+WHERE producto_id = 26 AND materia_prima_id = 26;
+
+-- PASO 8: Cambiar tipo a INSUMO
+UPDATE item_general 
+SET tipo = 'INSUMO'
+WHERE id = 26;
+
+-- PASO 9: Usar PRAGMA para deshabilitar FK temporalmente (SQLite)
+PRAGMA foreign_keys = OFF;
+
+-- PASO 10: Eliminar el registro duplicado
+DELETE FROM item_general WHERE id = 45;
+
+-- PASO 11: Reactivar FK
+PRAGMA foreign_keys = ON;
+
+-- PASO 12: Verificar resultado final
+SELECT 
+    'RESULTADO FINAL' as paso,
+    id, nombre, codigo, tipo
+FROM item_general 
+WHERE nombre = 'PASTA ESMALTE CAOBA';
+
+-- PASO 13: Verificar que las formulaciones siguen funcionando
+SELECT 
+    'VERIFICACIÓN FORMULACIONES' as paso,
+    f.id,
+    p.nombre as producto,
+    m.nombre as materia_prima,
+    f.cantidad,
+    f.unidad
+FROM formulaciones f
+JOIN item_general p ON f.producto_id = p.id
+JOIN item_general m ON f.materia_prima_id = m.id
+WHERE p.nombre = 'PASTA ESMALTE CAOBA' OR m.nombre = 'PASTA ESMALTE CAOBA';
