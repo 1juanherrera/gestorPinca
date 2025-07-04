@@ -9,6 +9,8 @@ export const Inventario = () => {
     const { 
         handleItemMateria, 
         handleProducto, 
+        handleInsumo,
+        handleType,
         item, 
         productos, 
         loading, 
@@ -20,18 +22,12 @@ export const Inventario = () => {
         clearSearch
      } = useItems();
 
-    // Función para manejar el botón de añadir (placeholder)
-    const handleAdd = () => {
-        console.log(`Añadir ${item === 'PRODUCTO' ? 'Producto' : 'Materia Prima'}`);
-        // Aquí irá la lógica para abrir modal o navegar a formulario
-    };
-
     return (
         <div className="ml-65 p-6 bg-gray-100 min-h-screen">
             <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                <h5 className="text-xl font-bold text-gray-800 mb-2">
                     Gestión de Inventario
-                </h1>
+                </h5>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
@@ -70,20 +66,39 @@ export const Inventario = () => {
                             <LuAtom size={16} />
                             Materia Prima
                         </button>
+
+                        <button 
+                            onClick={handleInsumo} 
+                            className={`
+                                px-4 py-2 rounded-lg font-medium text-sm uppercase tracking-wide
+                                transition-all duration-200 transform hover:scale-105
+                                shadow-md hover:shadow-lg cursor-pointer flex items-center gap-2
+                                ${item === 'INSUMO' 
+                                    ? 'bg-yellow-500 text-white shadow-yellow-500/30' 
+                                    : 'bg-gray-100 text-gray-700 hover:bg-yellow-50 hover:text-yellow-600'
+                                }
+                            `}
+                        >
+                            <LuAtom size={16} />
+                            Insumo
+                        </button>
                     </div>
 
                     {/* Botón de añadir */}
                     <button 
-                        onClick={handleAdd}
                         className="
                             px-6 py-2 rounded-lg font-medium text-sm uppercase tracking-wide
                             transition-all duration-200 transform hover:scale-105
                             shadow-md hover:shadow-lg cursor-pointer flex items-center gap-2
-                            bg-emerald-600 text-white hover:bg-emerald-700
-                        "
+                            bg-emerald-600 text-white hover:bg-emerald-700"
                     >
                         <MdAddCircleOutline size={18}/>
-                        Añadir {item === 'PRODUCTO' ? 'Producto' : 'Materia Prima'}
+                        Añadir {
+                                        item === 'PRODUCTO'
+                                            ? 'productos'
+                                            : item === 'MATERIA PRIMA'
+                                            ? 'materia prima'
+                                            : 'insumos'}
                     </button>
                 </div>
             </div>
@@ -116,7 +131,13 @@ export const Inventario = () => {
                                     onSearch={handleSearch}
                                     searchTerm={searchTerm}
                                     onClear={clearSearch}
-                                    placeholder={`Buscar ${item === 'PRODUCTO' ? 'productos' : 'materia prima'}...`}
+                                    placeholder={`Buscar ${
+                                        item === 'PRODUCTO'
+                                            ? 'productos'
+                                            : item === 'MATERIA PRIMA'
+                                            ? 'materia prima'
+                                            : 'insumos'}...
+                                `}
                                 />
                             </div>
                         </div>
@@ -129,6 +150,7 @@ export const Inventario = () => {
                         loading={loading}
                         error={error}
                         filteredProducts={filteredProducts}
+                        handleType={(e) =>handleType(e)}
                     />
                 </div>
             </div>
@@ -140,17 +162,26 @@ export const Inventario = () => {
                         {item === 'PRODUCTO' ? <AiFillProduct size={48} /> : <LuAtom size={48} />}
                     </div>
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
-                        No hay {item === 'PRODUCTO' ? 'productos' : 'materia prima'} disponibles
+                        No hay {item === 'PRODUCTO' 
+                        ? 'productos' 
+                        : 
+                        item === 'MATERIA PRIMA' 
+                        ? 'materias primas' 
+                        : 'insumos'} disponibles
                     </h3>
-                    <button 
-                        onClick={handleAdd}
+                    <button
                         className="bg-emerald-600 text-white px-6 py-2 rounded-lg mt-2 hover:bg-emerald-700 transition-colors flex items-center gap-2"
                     >
                         <MdAddCircleOutline size={20}/>
-                        Añadir {item === 'PRODUCTO' ? 'Producto' : 'Materia Prima'}
+                        Añadir {item === 'PRODUCTO' 
+                        ? 'productos' 
+                        : 
+                        item === 'MATERIA PRIMA' 
+                        ? 'materias primas' 
+                        : 'insumos'}
                     </button>
                 </div>
             )}
         </div>
-    );
-};
+    )
+}

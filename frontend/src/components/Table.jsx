@@ -1,6 +1,6 @@
 import { FaTrash, FaEdit } from "react-icons/fa";
 
-export const Table = ({ productos, loading, error, filteredProducts }) => {
+export const Table = ({ productos, loading, error, filteredProducts, handleType }) => {
 
     if (loading) return (
         <div className="flex justify-center items-center p-8">
@@ -18,15 +18,7 @@ export const Table = ({ productos, loading, error, filteredProducts }) => {
         <div className="flex justify-center items-center p-8">
             <p className="text-gray-600 text-xs">No se encontraron productos.</p>
         </div>
-    );
-
-    const handleEdit = (producto) => {
-        console.log('Editar producto:', producto);
-    };
-
-    const handleDelete = (producto) => {
-        console.log('Eliminar producto:', producto);
-    };
+    )
 
     return (
         <div className="overflow-hidden rounded-lg border border-gray-200">
@@ -66,11 +58,7 @@ export const Table = ({ productos, loading, error, filteredProducts }) => {
                                     </span>
                                 </td>
                                 <td className="px-2 text-center">
-                                    <span className={`px-3 py-1 text-xs font-medium rounded-md ${
-                                        producto.tipo === 'PRODUCTO' 
-                                            ? 'bg-blue-100 text-blue-800 border border-blue-200' 
-                                            : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                                    }`}>
+                                    <span className={`px-3 py-1 text-xs font-medium rounded-md ${handleType(producto)}`}>
                                         {producto.tipo}
                                     </span>
                                 </td>

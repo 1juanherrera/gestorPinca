@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { FaBoxOpen } from "react-icons/fa";
 
 export const Dashboard = () => {
   return (
@@ -7,7 +8,7 @@ export const Dashboard = () => {
         <li className="w-full">
           <NavLink
             to="/inventario"
-            className={({ isActive }) => `block w-full p-3 rounded-xl cursor-pointer text-left ${ isActive ? 'bg-neutral-900' : 'hover:bg-neutral-900'}`}> Inventario</NavLink>
+            className={({ isActive }) => `flex items-center gap-2 w-full p-3 rounded-xl cursor-pointer text-left ${ isActive ? 'bg-neutral-900' : 'hover:bg-neutral-900'}`}><FaBoxOpen fontSize={25}/> Inventario</NavLink>
         </li> 
         <li className="w-full">
           <NavLink

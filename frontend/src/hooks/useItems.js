@@ -15,6 +15,10 @@ export const useItems = () => {
         setItem('PRODUCTO')
     }
 
+    const handleInsumo = () => {
+        setItem('INSUMO')
+    }
+
     const handleSearch = (term) => {
         setSearchTerm(term);
     }
@@ -33,6 +37,16 @@ export const useItems = () => {
 
     const lengthProducts = productos?.length || 0;
 
+    const handleType = (producto) => {
+        if (producto.tipo === 'PRODUCTO') {
+            return 'bg-blue-100 text-blue-800 border border-blue-200';
+        } else if (item === 'MATERIA PRIMA') {
+            return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+        } else {
+            return 'bg-yellow-100 text-yellow-800 border border-yellow-200';
+        }
+    }
+
     return {
         productos,
         loading,
@@ -41,9 +55,11 @@ export const useItems = () => {
         filteredProducts,
         handleItemMateria,
         handleProducto,
+        handleInsumo,
         lengthProducts,
         searchTerm,
         handleSearch,
-        clearSearch
+        clearSearch,
+        handleType
     }
 }
