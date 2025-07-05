@@ -31,6 +31,7 @@ export const Table = ({ productos, loading, error, filteredProducts, handleType 
                             <th className="px-4 py-2 text-left text-xs font-medium">Nombre</th>
                             <th className="px-4 py-2 text-center text-xs font-medium w-42">Tipo</th>
                             <th className="px-4 py-2 text-center text-xs font-medium w-24">Cantidad</th>
+                            <th className="px-4 py-2 text-center text-xs font-medium w-30">Costo Unit.</th>
                             <th className="px-4 py-2 text-center text-xs font-medium w-32">Acciones</th>
                         </tr>
                     </thead>
@@ -67,17 +68,23 @@ export const Table = ({ productos, loading, error, filteredProducts, handleType 
                                         {producto.cantidad}
                                     </span>
                                 </td>
+                                <td className="px-2 text-left">
+                                        <span className="text-xs font-semibold text-emerald-800 pl-6">
+                                            {producto.costo_unitario}
+                                        </span>
+
+                                </td>
                                 <td className="px-2 py-1">
                                     <div className="flex justify-center gap-2">
                                         <button 
-                                            onClick={() => handleEdit(producto)}
+                                            onClick={() => (producto)}
                                             className="p-2 text-white rounded-md transition-colors bg-gray-500 hover:bg-gray-800 cursor-pointer"
                                             title="Editar"
                                         >
                                             <FaEdit size={14} />
                                         </button>
                                         <button 
-                                            onClick={() => handleDelete(producto)}
+                                            onClick={() => (producto)}
                                             className="p-2 bg-red-500 text-white hover:bg-red-800 rounded-md transition-colors cursor-pointer"
                                             title="Eliminar"
                                         >

@@ -120,7 +120,7 @@ export const Inventario = () => {
                                     : 'bg-emerald-100 text-emerald-800'
                                 }
                             `}>
-                                {filteredProducts.length} elemento{filteredProducts.length !== 1 ? 's' : ''}
+                                {filteredProducts.length} Elemento{filteredProducts.length !== 1 ? 's' : ''}
                             </span>
                             <span className="px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800">
                                  {lengthProducts} Elementos totales

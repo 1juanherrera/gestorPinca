@@ -1,11 +1,18 @@
 const Item = require('../models/Item');
+const { formatCantidad, formatMoneda } = require('../utils/formatters');
 
 exports.getAllItems = (req, res) => {
   Item.getAll((err, items) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
-    res.json(items);
+    const formattedItems = items.map(item => ({
+      ...item,
+      cantidad: formatCantidad(item.cantidad),
+      costo_unitario: formatMoneda(item.costo_unitario)
+    }));
+    
+    res.json(formattedItems);
   });
 }
 
@@ -18,23 +25,36 @@ exports.getItemById = (req, res) => {
     if (!item) {
       return res.status(404).json({ message: 'Item no encontrado' });
     }
-    res.json(item);
+    
+    const formattedItem = {
+      ...item,
+      cantidad: formatCantidad(item.cantidad),
+      costo_unitario: formatMoneda(item.costo_unitario)
+    };
+    
+    res.json(formattedItem);
   });
 }
 
 exports.createItem = (req, res) => {
-  const newItem = req.body; // Los datos del nuevo item vienen en el cuerpo de la solicitud
+  const newItem = req.body;
   Item.create(newItem, function(err) {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
-    res.status(201).json({ id: this.lastID, ...newItem }); // Retorna el item creado con su ID
+    res.status(201).json({ 
+      id: this.lastID, 
+      ...newItem,
+      cantidad: formatCantidad(newItem.cantidad || 0),
+      costo_unitario: formatMoneda(newItem.costo_unitario || 0)
+    });
   });
 }
 
 exports.updateItem = (req, res) => {
   const { id } = req.params;
   const updatedItem = req.body;
+
   Item.update(id, updatedItem, function(err) {
     if (err) {
       return res.status(500).json({ error: err.message });
@@ -42,7 +62,13 @@ exports.updateItem = (req, res) => {
     if (this.changes === 0) {
         return res.status(404).json({ message: 'Item no encontrado para actualizar' });
     }
-    res.json({ message: 'Item actualizado con éxito' });
+    res.json({ 
+      message: 'Item actualizado con éxito',
+      id: id,
+      ...updatedItem,
+      cantidad: updatedItem.cantidad ? formatCantidad(updatedItem.cantidad) : undefined,
+      costo_unitario: updatedItem.costo_unitario ? formatMoneda(updatedItem.costo_unitario) : undefined
+    });
   });
 }
 
@@ -55,6 +81,6 @@ exports.deleteItem = (req, res) => {
     if (this.changes === 0) {
         return res.status(404).json({ message: 'Item no encontrado para eliminar' });
     }
-    res.status(204).send(); // 204 No Content para eliminación exitosa
+    res.status(204).send();
   });
 }
