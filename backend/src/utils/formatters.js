@@ -13,7 +13,7 @@ const formatCantidad = (cantidad) => {
 const formatMoneda = (costo) => {
   const num = parseFloat(costo);
   if (isNaN(num)) return '$0,00';
-  return `$${num.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return `$ ${num.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 };
 
 // Función para formatear porcentajes

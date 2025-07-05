@@ -1,17 +1,28 @@
 const db = require('../db/connection');
 
 class Item {
-  // Para obtener todos los ítems con cantidad y costo
   static getAll(callback) {
     const sql = `
       SELECT 
-        ig.id, 
-        ig.nombre, 
-        ig.codigo, 
-        ig.tipo,
+            ig.id,
+            ig.nombre,
+            ig.codigo,
+            ig.tipo,
+            ie.viscosidad,
+            ie.p_g,
+            ie.color,
+            ie.brillo_60,
+            ie.secado,
+            ie.cubrimiento,
+            ie.molienda,
+            ie.ph,
+            ie.poder_tintoreo,
+            ie.volumen,
+            ie.categoria_id,
         COALESCE(inv.cantidad, 0) as cantidad,
         COALESCE(cp.costo_unitario, 0) as costo_unitario
       FROM item_general ig
+      LEFT JOIN item_especifico ie ON ig.id = ie.item_general_id
       LEFT JOIN inventario inv ON ig.id = inv.item_id
       LEFT JOIN costos_produccion cp ON ig.id = cp.item_id
       ORDER BY ig.id
@@ -47,9 +58,25 @@ class Item {
       }
       
       const itemId = this.lastID;
-      const cantidad = parseFloat(item.cantidad || 0);
-      const costoUnitario = parseFloat(item.costo_unitario || 0);
-      
+      const cantidad = item.cantidad || 0;
+      const costoUnitario = item.costo_unitario || 0;
+
+      const itemEspecificoSql = `INSERT INTO item_especifico (item_general_id, viscosidad, p_g, color, brillo_60, secado, cubrimiento, molienda, ph, poder_tintoreo, volumen, categoria_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      db.run(itemEspecificoSql, [
+        itemId,
+        item.viscosidad || '',
+        item.p_g || '',
+        item.color || '',
+        item.brillo_60 || '',
+        item.secado || '',
+        item.cubrimiento || '',
+        item.molienda || '',
+        item.ph || '',
+        item.poder_tintoreo || '',
+        item.volumen || '',
+        item.categoria_id || ''
+      ]);
+
       // Crear registro en inventario
       const inventarioSql = `INSERT INTO inventario (item_id, cantidad) VALUES (?, ?)`;
       db.run(inventarioSql, [itemId, cantidad], (invErr) => {

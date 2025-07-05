@@ -1,6 +1,6 @@
 import { FaTrash, FaEdit } from "react-icons/fa";
 
-export const Table = ({ productos, loading, error, filteredProducts, handleType }) => {
+export const Table = ({ productos, loading, error, handleType, onEdit }) => {
 
     if (loading) return (
         <div className="flex justify-center items-center p-8">
@@ -13,16 +13,10 @@ export const Table = ({ productos, loading, error, filteredProducts, handleType 
             <p className="text-red-600 text-xs">Error al cargar productos: {error}</p>
         </div>
     );
-    
-    if (!productos || productos.length === 0) return (
-        <div className="flex justify-center items-center p-8">
-            <p className="text-gray-600 text-xs">No se encontraron productos.</p>
-        </div>
-    )
 
     return (
         <div className="overflow-hidden rounded-lg border border-gray-200">
-            <div className="max-h-100 overflow-y-auto">
+            <div className="max-h-[50vh] overflow-y-auto">
                 <table className="w-full">
                     <thead className="sticky top-0 bg-gray-700 text-white uppercase">
                         <tr>
@@ -36,7 +30,7 @@ export const Table = ({ productos, loading, error, filteredProducts, handleType 
                         </tr>
                     </thead>
                     <tbody className="bg-gray-100">
-                        {filteredProducts.map((producto, index) => (
+                        {productos.map((producto, index) => (
                             <tr 
                                 key={producto.id} 
                                 className={`border-b border-gray-300 hover:bg-gray-200 transition-colors ${
@@ -77,14 +71,14 @@ export const Table = ({ productos, loading, error, filteredProducts, handleType 
                                 <td className="px-2 py-1">
                                     <div className="flex justify-center gap-2">
                                         <button 
-                                            onClick={() => (producto)}
+                                            onClick={() => onEdit && onEdit(producto)}
                                             className="p-2 text-white rounded-md transition-colors bg-gray-500 hover:bg-gray-800 cursor-pointer"
                                             title="Editar"
                                         >
                                             <FaEdit size={14} />
                                         </button>
                                         <button 
-                                            onClick={() => (producto)}
+                                            onClick={() => console.log('Delete:', producto)}
                                             className="p-2 bg-red-500 text-white hover:bg-red-800 rounded-md transition-colors cursor-pointer"
                                             title="Eliminar"
                                         >

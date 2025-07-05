@@ -8,9 +8,6 @@ export const useApi = (endpoint, options = {}) => {
 
   const fullUrl = getApiUrl(endpoint);
 
-  // **** CAMBIO CLAVE: Usar useRef para mantener una referencia estable de 'options' ****
-  // Esto evita que 'options' cause re-renders si el objeto literal cambia en cada render,
-  // pero su contenido relevante para la petición es el mismo.
   const optionsRef = useRef(options);
 
   // Actualizar el ref si las opciones realmente cambian (profundo o superficialmente según necesites)
