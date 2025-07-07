@@ -1,22 +1,21 @@
-// src/hooks/useInventario.js
-
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     setItemType,
     setSearchTerm,
     clearSearchTerm,
-    fetchItems, // Importa el thunk actualizado
+    fetchItems,
     createItem,
     updateItem,
+    deleteItem
 } from '../features/inventario/inventarioSlice'; 
 
 export const useInventario = () => {
     const dispatch = useDispatch();
 
     const {
-        items, // Ahora 'items' contendrá TODOS los ítems de la API
-        itemType, // Este valor se usa SOLO para filtrar en el frontend
+        items, 
+        itemType, 
         searchTerm,
         loading,
         error,
@@ -41,9 +40,6 @@ export const useInventario = () => {
 
     const lengthProducts = items?.length || 0; 
 
-    // --- Lógica de carga de datos ---
-    // ¡Ahora, fetchItems no recibe argumentos! Solo se dispara una vez o cuando dispatch cambia.
-    // El filtrado por 'itemType' se hace DENTRO del hook con filteredProducts.
     useEffect(() => {
         const fetchInventoryItems = async () => {
             const resultAction = await dispatch(fetchItems()); // <-- ¡Sin argumentos aquí!
@@ -54,14 +50,12 @@ export const useInventario = () => {
             }
         };
         fetchInventoryItems();
-    }, [dispatch]); // Dependencias: solo se ejecuta una vez al montar, o si dispatch cambia
+    }, [dispatch]); 
 
     // --- Handlers de acciones de formulario ---
     const handleCreateItem = async (formData) => {
-        // Dispatch el thunk createItem con los datos del formulario
         const resultAction = await dispatch(createItem(formData));
         
-        // Verifica si la acción de crear fue exitosa
         if (createItem.fulfilled.match(resultAction)) {
             setShowForm(false); // Cierra el formulario
             // Opcional: limpiar editingItem si no hay uno activo
@@ -72,7 +66,6 @@ export const useInventario = () => {
             dispatch(fetchItems()); 
             
             // Aquí podrías mostrar un mensaje de éxito al usuario
-            console.log('Ítem creado y lista actualizada.');
         } else {
             // Si la acción de crear falló
             console.error('Error al crear ítem:', resultAction.payload || 'Error desconocido');
@@ -84,6 +77,24 @@ export const useInventario = () => {
         setEditingItem(item);
         setShowForm(true);
     };
+
+    const handleDeleteItem = async (id) => {
+    
+    try {
+        const resultAction = await dispatch(deleteItem(id));
+        
+        if (deleteItem.fulfilled.match(resultAction)) {
+            console.log('🟢 useInventario: Ítem eliminado exitosamente:', resultAction.payload);
+            dispatch(fetchItems());
+        
+        } else {
+            console.error('🔴 useInventario: Error al eliminar ítem:', resultAction.payload || 'Error desconocido');
+            console.error('🔴 Error completo:', resultAction.error);
+        }
+    } catch (error) {
+        console.error('🔴 useInventario: Error inesperado al eliminar ítem:', error);
+    }
+};
 
     const handleUpdateItem = async (formData) => {
         const resultAction = await dispatch(updateItem({ id: editingItem.id, formData }));
@@ -145,5 +156,6 @@ export const useInventario = () => {
         handleCloseForm,
         handleType, 
         setShowForm,
+        handleDeleteItem
     };
 }

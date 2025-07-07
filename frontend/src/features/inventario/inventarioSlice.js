@@ -1,6 +1,5 @@
-// src/features/inventory/inventorySlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { apiService, getApiUrl } from '../../services/apiService';
+import { apiService } from '../../services/apiService';
 
 const initialState = {
   items: [],
@@ -16,18 +15,11 @@ export const fetchItems = createAsyncThunk(
     'inventory/fetchItems',
     async (_, { rejectWithValue }) => {
         try {
-            console.log('fetchItems: Intentando cargar TODOS los ítems.');
             const url = `items`;
-            console.log('fetchItems: URL de la API a solicitar:', getApiUrl(url)); 
-
             const data = await apiService.get(url);
-
-            console.log('fetchItems: Datos recibidos de la API (dentro del thunk):', data);
             return data;
         } catch (error) {
-            console.error('fetchItems: Error capturado en thunk:', error);
             console.error('fetchItems: Mensaje de error:', error.message);
-            console.error('fetchItems: Detalles adicionales del error:', error.response?.data || error.response || JSON.stringify(error));
             return rejectWithValue(error.message || 'Error desconocido al cargar ítems.');
         }
     }
@@ -38,9 +30,7 @@ export const createItem = createAsyncThunk(
     'inventory/createItem',
     async (formData, { rejectWithValue }) => {
         try {
-            console.log('createItem: Intentando crear ítem con datos:', formData);
             const data = await apiService.post('items', formData);
-            console.log('createItem: Ítem creado con éxito:', data);
             return data;
         } catch (error) {
             console.error('createItem: Error al crear ítem:', error.message);
@@ -54,13 +44,34 @@ export const updateItem = createAsyncThunk(
     'inventory/updateItem',
     async ({ id, formData }, { rejectWithValue }) => {
         try {
-            console.log(`updateItem: Intentando actualizar ítem ${id} con datos:`, formData);
+            
             const data = await apiService.put(`items/${id}`, formData);
-            console.log('updateItem: Ítem actualizado con éxito:', data);
             return data;
         } catch (error) {
-            console.error('updateItem: Error al actualizar ítem:', error.message);
-            return rejectWithValue(error.message);
+            
+            // Proporcionar más información del error
+            if (error.response) {
+                return rejectWithValue(`Error ${error.response.status}: ${error.response.data?.message || error.response.statusText}`);
+            }
+            
+            return rejectWithValue(error.message || 'Error desconocido al actualizar ítem');
+        }
+    }
+);
+
+// Agregar este thunk después de updateItem
+// CORREGIDO: Thunk para eliminar un ítem
+export const deleteItem = createAsyncThunk(
+    'inventario/deleteItem',
+    async (id, { rejectWithValue }) => {
+        try {
+            
+            // USAR el método delete genérico del apiService
+            const response = await apiService.delete(`items/${id}`);
+            
+            return { id, ...response };
+        } catch (error) {
+            return rejectWithValue(error.message || 'Error al eliminar ítem');
         }
     }
 );
@@ -100,7 +111,7 @@ const inventarioSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(createItem.fulfilled, (state, action) => {
+            .addCase(createItem.fulfilled, (state) => {
                 state.loading = false;
                 state.error = null;
             })
@@ -112,13 +123,27 @@ const inventarioSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(updateItem.fulfilled, (state, action) => {
+            .addCase(updateItem.fulfilled, (state) => {
                 state.loading = false;
                 state.error = null;
             })
             .addCase(updateItem.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload || 'Error al actualizar ítem';
+            })
+            .addCase(deleteItem.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(deleteItem.fulfilled, (state, action) => {
+                state.loading = false;
+                // Eliminar el ítem del estado
+                state.items = state.items.filter(item => item.id !== action.payload);
+                state.error = null;
+            })
+            .addCase(deleteItem.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || 'Error al eliminar ítem';
             });
     },
 });

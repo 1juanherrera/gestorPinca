@@ -1,14 +1,7 @@
-// src/pages/Inventario.jsx
-import React from "react";
-// Asegúrate de que las rutas a tus componentes sean correctas
 import { Table } from "../components/Table"; 
 import { ItemForm } from "../components/ItemForm"; 
 import { SearchBar } from "../components/SearchBar";
-
-// Importa tu custom hook
 import { useInventario } from "../hooks/useInventario";
-
-// Iconos (asegúrate de tener react-icons instalado)
 import { MdAddCircleOutline } from "react-icons/md";
 import { AiFillProduct, AiFillAppstore } from "react-icons/ai";
 import { LuAtom } from "react-icons/lu";
@@ -17,8 +10,6 @@ import { LuAtom } from "react-icons/lu";
 export const Inventario = () => {
     // Usa el custom hook para obtener toda la lógica y el estado
     const {
-        // Estado de Redux y estado local del hook
-        items,
         itemType,
         searchTerm,
         loading,
@@ -39,6 +30,7 @@ export const Inventario = () => {
         handleCloseForm,
         handleType,
         setShowForm,
+        handleDeleteItem
     } = useInventario();
 
     return (
@@ -181,6 +173,7 @@ export const Inventario = () => {
                             productos={filteredProducts} 
                             handleType={handleType}
                             onEdit={handleEditItem}
+                            onDelete={handleDeleteItem}
                         />
                     )}
                 </div>

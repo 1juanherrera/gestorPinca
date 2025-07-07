@@ -38,6 +38,7 @@ const apiCall = async (endpoint, options = {}) => {
       // Intenta parsear el cuerpo de la respuesta como JSON
       errorBody = JSON.parse(rawErrorText);
     } catch (e) {
+      console.error('Error al parsear el cuerpo de error como JSON:', e);
       // Si no se puede parsear a JSON, o si el texto crudo no era JSON, crea un mensaje genérico
       errorBody = { message: 'Ha ocurrido un error inesperado en el servidor o la respuesta no es JSON.' };
       if (rawErrorText.startsWith('<!doctype html>')) {
@@ -59,7 +60,7 @@ export const apiService = {
   
   post: (endpoint, data, options) => apiCall(endpoint, {
     method: 'POST',
-    body: JSON.stringify(data), // Convierte los datos a JSON para el cuerpo de la petición
+    body: JSON.stringify(data),
     ...options
   }),
   

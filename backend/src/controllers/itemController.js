@@ -51,36 +51,69 @@ exports.createItem = (req, res) => {
   });
 }
 
-exports.updateItem = (req, res) => {
-  const { id } = req.params;
-  const updatedItem = req.body;
-
-  Item.update(id, updatedItem, function(err) {
-    if (err) {
-      return res.status(500).json({ error: err.message });
+exports.updateItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const itemData = req.body;
+    
+    // Validar que el ID sea un número
+    if (!id || isNaN(id)) {
+      console.error('ID inválido:', id);
+      return res.status(400).json({ error: 'ID de ítem inválido' });
     }
-    if (this.changes === 0) {
-        return res.status(404).json({ message: 'Item no encontrado para actualizar' });
+    
+    // Validar datos básicos
+    if (!itemData.nombre || !itemData.codigo || !itemData.tipo) {
+      console.error('Datos básicos faltantes:', { nombre: itemData.nombre, codigo: itemData.codigo, tipo: itemData.tipo });
+      return res.status(400).json({ error: 'Faltan datos básicos (nombre, código, tipo)' });
     }
-    res.json({ 
-      message: 'Item actualizado con éxito',
-      id: id,
-      ...updatedItem,
-      cantidad: updatedItem.cantidad ? formatCantidad(updatedItem.cantidad) : undefined,
-      costo_unitario: updatedItem.costo_unitario ? formatMoneda(updatedItem.costo_unitario) : undefined
+    
+    Item.update(parseInt(id), itemData, (err, updatedItem) => {
+      if (err) {
+        console.error('Error en Item.update:', err);
+        console.error('Error.message:', err.message);
+        console.error('Error.stack:', err.stack);
+        return res.status(500).json({ error: err.message });
+      }
+      res.json(updatedItem);
     });
-  });
-}
+  } catch (error) {
+    console.error('Error inesperado en updateItem:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
 
-exports.deleteItem = (req, res) => {
-  const { id } = req.params;
-  Item.delete(id, function(err) {
-    if (err) {
-      return res.status(500).json({ error: err.message });
+exports.deleteItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Validar que el ID sea un número
+    if (!id || isNaN(id)) {
+      console.error('ID inválido:', id);
+      return res.status(400).json({ error: 'ID de ítem inválido' });
     }
-    if (this.changes === 0) {
-        return res.status(404).json({ message: 'Item no encontrado para eliminar' });
-    }
-    res.status(204).send();
-  });
-}
+    
+    // Verificar que el ítem existe antes de eliminar
+    Item.getById(parseInt(id), (getErr, item) => {
+      if (getErr) {
+        console.error('Error verificando existencia del item:', getErr);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+      }
+      
+      if (!item) {
+        console.error('Item no encontrado:', id);
+        return res.status(404).json({ error: 'Ítem no encontrado' });
+      }
+      
+      // Proceder con la eliminación
+      Item.delete(parseInt(id), (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        res.json({ message: 'Ítem eliminado exitosamente', ...result });
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
