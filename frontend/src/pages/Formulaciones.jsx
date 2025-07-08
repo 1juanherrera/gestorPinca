@@ -8,6 +8,7 @@ import { FaFlask, FaChartPie, FaSpinner, FaCube } from 'react-icons/fa';
 import { MdScience } from 'react-icons/md';
 import { useState, useEffect } from 'react';
 import { formatoCantidad } from '../utils/formatters';
+import { CostProductsTable } from '../components/CostProductsTable';
 
 export const Formulaciones = () => {
     const {
@@ -77,9 +78,6 @@ export const Formulaciones = () => {
                             <h1 className="text-xl font-bold text-gray-800">
                                 Formulaciones y Calculadora
                             </h1>
-                            <p className="text-sm text-gray-600">
-                                Consulta formulaciones y calcula costos
-                            </p>
                         </div>
                     </div>
                     <button
@@ -234,11 +232,23 @@ export const Formulaciones = () => {
                 </div>
             </div>
 
-            {/* NUEVA: Tabla de Especificaciones Técnicas */}
-            <div className="mt-6">
-                <ProductSpecificationsTable
-                    selectedProductData={selectedProductData}
-                />
+            {/* Especificaciones y Costos */}
+            <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Desglose de Costos */}
+                <div>
+                    <CostProductsTable
+                        selectedProductData={selectedProductData}
+                        calculationResult={calculationResult}
+                        compact={true}
+                    />
+                </div>
+                {/* Especificaciones Técnicas */}
+                <div>
+                    <ProductSpecificationsTable
+                        selectedProductData={selectedProductData}
+                    />
+                </div>
+            
             </div>
         </div>
     );

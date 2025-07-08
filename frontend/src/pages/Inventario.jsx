@@ -5,7 +5,7 @@ import { useInventario } from "../hooks/useInventario";
 import { MdAddCircleOutline } from "react-icons/md";
 import { AiFillProduct, AiFillAppstore } from "react-icons/ai";
 import { LuAtom } from "react-icons/lu";
-
+import { FaBoxOpen } from "react-icons/fa";
 
 export const Inventario = () => {
     // Usa el custom hook para obtener toda la lógica y el estado
@@ -34,12 +34,15 @@ export const Inventario = () => {
     } = useInventario();
 
     return (
-        <div className="ml-65 p-6 bg-gray-100 min-h-screen">
-            <div className="mb-6">
-                <h5 className="text-xl font-bold text-gray-800 mb-2">
-                    Gestión de Inventario
-                </h5>
-            </div>
+        <div className="ml-65 p-4 bg-gray-100 min-h-screen">
+            <div className="mb-4 flex items-center gap-2">
+                    <FaBoxOpen className="text-blue-500" size={25} />
+                <div>
+                    <h5 className="text-xl font-bold text-gray-800 mb-2 flex items-center">
+                        Gestión de Inventario
+                    </h5>                       
+                </div>
+            </div> 
 
             <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
                 <div className="flex flex-wrap items-center justify-between gap-4">

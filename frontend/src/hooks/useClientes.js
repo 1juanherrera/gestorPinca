@@ -15,6 +15,7 @@ import {
   setSearchTerm,
   clearError,
   clearClienteRelationalData,
+  optimizeState,
   selectClientes,
   selectClientesLoading,
   selectClientesError,

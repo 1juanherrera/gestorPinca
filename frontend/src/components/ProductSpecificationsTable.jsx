@@ -1,4 +1,4 @@
-import { FaFlask, FaVial, FaPalette, FaClock, FaEye, FaTint, FaWeight, FaPaintBrush  } from 'react-icons/fa';
+import { FaFlask, FaVial, FaPalette, FaClock, FaEye, FaTint, FaWeight, FaPaintBrush } from 'react-icons/fa';
 import { MdScience } from 'react-icons/md';
 
 export const ProductSpecificationsTable = ({ 
@@ -6,15 +6,15 @@ export const ProductSpecificationsTable = ({
 }) => {
     if (!selectedProductData) {
         return (
-            <div className="bg-white rounded-lg shadow-sm p-3 text-center">
-                <div className="text-gray-400 mb-2">
-                    <FaEye size={24} className="mx-auto" />
+            <div className="bg-white rounded-lg shadow-sm p-4 text-center">
+                <div className="text-gray-400 mb-3">
+                    <MdScience size={48} className="mx-auto" />
                 </div>
-                <h3 className="text-sm font-medium text-gray-900 mb-1">
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
                     Especificaciones Técnicas
                 </h3>
-                <p className="text-xs text-gray-500">
-                    Selecciona un producto
+                <p className="text-sm text-gray-500">
+                    Selecciona un producto para ver sus especificaciones
                 </p>
             </div>
         );
@@ -24,26 +24,26 @@ export const ProductSpecificationsTable = ({
     const getParameterIcon = (param) => {
         switch(param.toLowerCase()) {
             case 'viscosidad':
-                return <FaTint className="text-blue-500" size={12} />;
+                return <FaTint className="text-blue-500" size={14} />;
             case 'p_g':
-                return <FaWeight className="text-green-500" size={12} />;
+                return <FaWeight className="text-green-500" size={14} />;
             case 'brillo':
             case 'brillo_60':
-                return <FaEye className="text-yellow-500" size={12} />;
+                return <FaEye className="text-yellow-500" size={14} />;
             case 'molienda':
-                return <FaVial className="text-purple-500" size={12} />;
+                return <FaVial className="text-purple-500" size={14} />;
             case 'secado':
-                return <FaClock className="text-orange-500" size={12} />;
+                return <FaClock className="text-orange-500" size={14} />;
             case 'cubrimiento':
-                return <FaPaintBrush className="text-indigo-500" size={12} />;
+                return <FaPaintBrush className="text-indigo-500" size={14} />;
             case 'color':
-                return <FaPalette className="text-red-500" size={12} />;
+                return <FaPalette className="text-red-500" size={14} />;
             case 'ph':
-                return <FaFlask className="text-teal-500" size={12} />;
+                return <FaFlask className="text-teal-500" size={14} />;
             case 'poder_tintoreo':
-                return <FaPalette className="text-pink-500" size={12} />;
+                return <FaPalette className="text-pink-500" size={14} />;
             default:
-                return <MdScience className="text-gray-500" size={12} />;
+                return <MdScience className="text-gray-500" size={14} />;
         }
     };
 
@@ -70,19 +70,19 @@ export const ProductSpecificationsTable = ({
         
         switch(param.toLowerCase()) {
             case 'viscosidad':
-                return `${value} KU`;
+                return `${value}`;
             case 'p_g':
-                return `${value} Kg`;
+                return `${value}`;
             case 'brillo':
                 return value === 'MATE' ? 'MATE' : `${value}`;
             case 'brillo_60':
-                return `>= ${value}`;
+                return `${value}`;
             case 'molienda':
                 return `${value} H`;
             case 'secado':
-                return `${value} HORAS`;
+                return `${value}`;
             case 'cubrimiento':
-                return `${value} +/-5`;
+                return `${value}`;
             case 'color':
                 return value === 'STD' ? 'STD' : value;
             case 'ph':
@@ -110,30 +110,30 @@ export const ProductSpecificationsTable = ({
 
     return (
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-            {/* Header Compacto */}
-            <div className="bg-gradient-to-r from-teal-500 to-teal-600 text-white px-3 py-2">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-3">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h3 className="text-sm font-semibold flex items-center gap-1">
-                            <MdScience size={12} />
-                            Especificaciones
+                        <h3 className="text-lg font-semibold flex items-center gap-2">
+                            <MdScience size={20} />
+                            Especificaciones Técnicas
                         </h3>
-                        <p className="text-teal-100 text-xs truncate">
+                        <p className="text-teal-100 text-xs">
                             {selectedProductData.nombre}
                         </p>
                     </div>
-                    <div className="text-right flex gap-1 items-center">
-                        <div className="text-sm font-bold">
-                            {parameters.length}
+                    <div className="text-right">
+                        <div className="text-xs text-teal-100">
+                            {parameters.length} parámetros
                         </div>
-                        <div className="text-sm text-teal-100">
-                            Parámetros
+                        <div className="text-xs text-teal-100">
+                            {selectedProductData.codigo}
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Tabla Compacta */}
+            {/* Tabla */}
             <div className="overflow-x-auto">
                 <table className="w-full">
                     <thead className="bg-gray-50">
@@ -155,32 +155,33 @@ export const ProductSpecificationsTable = ({
                                 <tr key={param.key} className="hover:bg-gray-50">
                                     <td className="px-3 py-2 whitespace-nowrap">
                                         <div className="flex items-center">
-                                            <div className="flex-shrink-0 mr-2">
+                                            <div className="flex-shrink-0 mr-3">
                                                 {getParameterIcon(param.key)}
                                             </div>
-                                            <div className="text-xs font-medium text-gray-700">
+                                            <div className="text-sm font-medium text-gray-900">
                                                 {formatParameterName(param.key)}
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-3 py-2 whitespace-nowrap text-center">
-                                        <div className="text-xs font-semibold text-gray-700">
+                                        <div className="text-sm font-semibold text-teal-600">
                                             {formatParameterValue(param.key, param.value)}
                                         </div>
                                     </td>
                                     <td className="px-3 py-2 whitespace-nowrap text-center">
-                                        <div className="text-xs text-gray-500">
+                                        <div className="text-sm text-gray-500">
                                             N/A
                                         </div>
                                     </td>
+                                    
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="3" className="px-3 py-6 text-center text-gray-500">
+                                <td colSpan="3" className="px-3 py-8 text-center text-gray-500">
                                     <div className="flex flex-col items-center">
-                                        <MdScience size={32} className="text-gray-300 mb-2" />
-                                        <p className="text-xs">
+                                        <MdScience size={48} className="text-gray-300 mb-2" />
+                                        <p className="text-sm">
                                             No hay especificaciones disponibles
                                         </p>
                                     </div>
@@ -191,14 +192,14 @@ export const ProductSpecificationsTable = ({
                 </table>
             </div>
 
-            {/* Footer Compacto */}
-            <div className="bg-gray-50 px-3 py-2 border-t">
+            {/* Footer */}
+            <div className="bg-gray-50 px-4 py-3 border-t border-gray-400">
                 <div className="flex justify-between items-center">
-                    <div className="text-xs text-gray-600">
-                        <span className="font-semibold">{parameters.length}</span> especificaciones
+                    <div className="text-sm text-gray-600">
+                        <span className="font-semibold">{parameters.length}</span> especificaciones técnicas
                     </div>
-                    <div className="text-xs text-gray-500">
-                        {selectedProductData.codigo}
+                    <div className="text-sm text-gray-600">
+                        <span className="font-semibold">Código:</span> {selectedProductData.codigo}
                     </div>
                 </div>
             </div>

@@ -3,8 +3,11 @@ import { Clientes } from "./pages/Clientes";
 import { Formulaciones } from "./pages/Formulaciones";
 import { Inventario } from "./pages/Inventario"
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useStateOptimization } from "./hooks/useStateOptimization";
 
 export const App = () => {
+  // Usar optimización automática del estado
+  useStateOptimization();
 
   return (
     <BrowserRouter>

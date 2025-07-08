@@ -52,9 +52,9 @@ export const ClienteCard = ({ cliente, onView, onEdit, onDelete }) => {
             </span>
             
             {/* Indicador de facturas pendientes */}
-            {facturasPendientes > 0 && (
+            {facturasPendientes === 0 && saldoPendiente > 0 && (
               <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                {facturasPendientes} pendientes
+                pendiente
               </span>
             )}
             

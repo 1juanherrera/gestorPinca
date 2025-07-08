@@ -78,21 +78,18 @@ export const Clientes = () => {
 
       return (
         <div className="ml-65 p-4 bg-gray-100 min-h-screen">
-           <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <div>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-            <div className="mb-4 lg:mb-0">
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <FaUsers className="text-blue-600" />
+            <div className="flex items-center gap-2">
+              <FaUsers className="text-blue-600" size={25}/>
+              <h1 className="text-xl font-bold text-gray-800">
+                
                 Gestión de Clientes
               </h1>
-              <p className="text-gray-600 mt-1">
-                Administra tu cartera de clientes y sus transacciones
-              </p>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 mb-4">
               <button
                 onClick={abrirModalCrear}
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -101,7 +98,7 @@ export const Clientes = () => {
                 Nuevo Cliente
               </button>
             </div>
-          </div>
+
         </div>
 
         {/* Estadísticas */}

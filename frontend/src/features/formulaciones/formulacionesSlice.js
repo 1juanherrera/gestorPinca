@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
 import { apiService } from '../../services/apiService';
 
 // Estado inicial
@@ -61,30 +61,35 @@ const formulacionesSlice = createSlice({
 // Acciones
 export const { clearError, clearFormulaciones } = formulacionesSlice.actions;
 
-// Selectores
+// Selectores básicos
 export const selectFormulaciones = (state) => state.formulaciones.formulaciones;
 export const selectFormulacionesLoading = (state) => state.formulaciones.loading;
 export const selectFormulacionesError = (state) => state.formulaciones.error;
 
-// Selector para productos con formulaciones
-export const selectProductosConFormulaciones = (state) => {
-  return state.formulaciones.formulaciones.filter(item => 
-    (item.tipo === 'PRODUCTO' || item.tipo === 'INSUMO') &&
-    item.formulaciones && 
-    item.formulaciones.length > 0
-  );
-};
+// Selectores memoizados
+export const selectProductosConFormulaciones = createSelector(
+  [selectFormulaciones],
+  (formulaciones) => {
+    return formulaciones.filter(item => 
+      (item.tipo === 'PRODUCTO' || item.tipo === 'INSUMO') &&
+      item.formulaciones && 
+      item.formulaciones.length > 0
+    );
+  }
+);
 
-export const selectEstadisticasPorTipo = (state) => {
-  const items = state.formulaciones.formulaciones;
-  const productos = items.filter(item => item.tipo === 'PRODUCTO' && item.formulaciones?.length > 0);
-  const insumos = items.filter(item => item.tipo === 'INSUMO' && item.formulaciones?.length > 0);
-  
-  return {
-    productos: productos.length,
-    insumos: insumos.length,
-    total: productos.length + insumos.length
-  };
-};
+export const selectEstadisticasPorTipo = createSelector(
+  [selectFormulaciones],
+  (formulaciones) => {
+    const productos = formulaciones.filter(item => item.tipo === 'PRODUCTO' && item.formulaciones?.length > 0);
+    const insumos = formulaciones.filter(item => item.tipo === 'INSUMO' && item.formulaciones?.length > 0);
+    
+    return {
+      productos: productos.length,
+      insumos: insumos.length,
+      total: productos.length + insumos.length
+    };
+  }
+);
 
 export default formulacionesSlice.reducer;

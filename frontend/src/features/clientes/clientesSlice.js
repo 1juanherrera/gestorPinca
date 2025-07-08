@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
 import { apiService } from '../../services/apiService';
 
 // Estado inicial
@@ -14,7 +14,10 @@ const initialState = {
   filters: {
     activos: true,
     inactivos: false
-  }
+  },
+  // Cache para optimizar rendimiento
+  lastFetch: null,
+  totalClientes: 0
 };
 
 // Thunk para obtener todos los clientes
@@ -171,6 +174,8 @@ const clientesSlice = createSlice({
     },
     clearClientes: (state) => {
       state.clientes = [];
+      state.totalClientes = 0;
+      state.lastFetch = null;
     },
     setSelectedCliente: (state, action) => {
       state.selectedCliente = action.payload;
@@ -195,6 +200,19 @@ const clientesSlice = createSlice({
         activos: true,
         inactivos: false
       };
+    },
+    // Nueva acción para limpiar datos innecesarios y optimizar memoria
+    optimizeState: (state) => {
+      // Limpiar datos relacionales cuando no se necesiten
+      if (!state.selectedCliente) {
+        state.clienteConFacturas = null;
+        state.clienteConPagos = null;
+        state.clienteEstadisticas = null;
+      }
+      // Limpiar errores antiguos
+      if (state.error && state.lastFetch && Date.now() - state.lastFetch > 300000) { // 5 minutos
+        state.error = null;
+      }
     }
   },
   extraReducers: (builder) => {
@@ -207,6 +225,8 @@ const clientesSlice = createSlice({
       .addCase(fetchClientes.fulfilled, (state, action) => {
         state.loading = false;
         state.clientes = action.payload;
+        state.totalClientes = action.payload.length;
+        state.lastFetch = Date.now();
         state.error = null;
       })
       .addCase(fetchClientes.rejected, (state, action) => {
@@ -354,7 +374,8 @@ export const {
   clearClienteRelationalData,
   setSearchTerm,
   updateFilters,
-  clearFilters
+  clearFilters,
+  optimizeState
 } = clientesSlice.actions;
 
 // Selectores básicos
@@ -367,42 +388,61 @@ export const selectFilters = (state) => state.clientes.filters;
 export const selectClienteConFacturas = (state) => state.clientes.clienteConFacturas;
 export const selectClienteConPagos = (state) => state.clientes.clienteConPagos;
 export const selectClienteEstadisticas = (state) => state.clientes.clienteEstadisticas;
+export const selectTotalClientes = (state) => state.clientes.totalClientes;
+export const selectLastFetch = (state) => state.clientes.lastFetch;
 
-// Selectores avanzados
-export const selectClientesFiltrados = (state) => {
-  const clientes = state.clientes.clientes;
-  const searchTerm = state.clientes.searchTerm.toLowerCase();
+// Selectores avanzados memoizados
+export const selectClientesFiltrados = createSelector(
+  [selectClientes, selectSearchTerm],
+  (clientes, searchTerm) => {
+    // Si no hay término de búsqueda, devolver todos los clientes
+    if (!searchTerm || searchTerm.trim() === '') {
+      return clientes;
+    }
 
-  return clientes.filter(cliente => {
-    const matchesSearch = !searchTerm || 
-      cliente.nombre_empresa?.toLowerCase().includes(searchTerm) ||
-      cliente.nombre_encargado?.toLowerCase().includes(searchTerm) ||
-      cliente.numero_documento?.toString().includes(searchTerm) ||
-      cliente.email?.toLowerCase().includes(searchTerm);
+    const searchTermLower = searchTerm.toLowerCase().trim();
 
-    return matchesSearch;
-  });
-};
+    return clientes.filter(cliente => {
+      // Verificar cada campo de forma eficiente
+      const empresa = cliente.nombre_empresa?.toLowerCase();
+      const encargado = cliente.nombre_encargado?.toLowerCase();
+      const documento = cliente.numero_documento?.toString();
+      const email = cliente.email?.toLowerCase();
 
-export const selectClienteById = (state, clienteId) => {
-  return state.clientes.clientes.find(cliente => cliente.id === clienteId);
-};
+      return (empresa && empresa.includes(searchTermLower)) ||
+             (encargado && encargado.includes(searchTermLower)) ||
+             (documento && documento.includes(searchTermLower)) ||
+             (email && email.includes(searchTermLower));
+    });
+  }
+);
 
-export const selectClientesEstadisticas = (state) => {
-  const clientes = state.clientes.clientes;
-  
-  return {
-    total: clientes.length,
-    conEmail: clientes.filter(c => c.email && c.email.trim() !== '').length,
-    conTelefono: clientes.filter(c => c.telefono && c.telefono.trim() !== '').length,
-    empresas: clientes.filter(c => c.nombre_empresa && c.nombre_empresa.trim() !== '').length
-  };
-};
+export const selectClienteById = createSelector(
+  [selectClientes, (state, clienteId) => clienteId],
+  (clientes, clienteId) => {
+    return clientes.find(cliente => cliente.id === clienteId);
+  }
+);
 
-export const selectClientesPorEmpresa = (state, nombreEmpresa) => {
-  return state.clientes.clientes.filter(cliente => 
-    cliente.nombre_empresa?.toLowerCase().includes(nombreEmpresa.toLowerCase())
-  );
-};
+export const selectClientesEstadisticas = createSelector(
+  [selectClientes],
+  (clientes) => {
+    return {
+      total: clientes.length,
+      conEmail: clientes.filter(c => c.email && c.email.trim() !== '').length,
+      conTelefono: clientes.filter(c => c.telefono && c.telefono.trim() !== '').length,
+      empresas: clientes.filter(c => c.nombre_empresa && c.nombre_empresa.trim() !== '').length
+    };
+  }
+);
+
+export const selectClientesPorEmpresa = createSelector(
+  [selectClientes, (state, nombreEmpresa) => nombreEmpresa],
+  (clientes, nombreEmpresa) => {
+    return clientes.filter(cliente => 
+      cliente.nombre_empresa?.toLowerCase().includes(nombreEmpresa.toLowerCase())
+    );
+  }
+);
 
 export default clientesSlice.reducer;
