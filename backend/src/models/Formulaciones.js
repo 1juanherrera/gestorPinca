@@ -389,8 +389,7 @@ static calculateCostsWithNewVolume(itemId, newVolume, callback) {
         callback(err);
         return;
       }
-
-      console.log('✅ [DEBUG] Costos actualizados para item:', itemId);
+      
       callback(null, { success: true, changes: this.changes });
     });
   }

@@ -4,6 +4,7 @@ const app = express();
 const config = require('./config/config'); // Importa la configuración
 const itemRoutes = require('./routes/itemRoutes'); // Importa tus rutas de items
 const formulacionesRoutes = require('./routes/formulacionesRoutes');
+const clientesRoutes = require('./routes/clientesRoutes'); // Importa las rutas de clientes
 
 // Middleware para parsear JSON en el cuerpo de las solicitudes
 app.use(cors());
@@ -12,6 +13,7 @@ app.use(express.json());
 // Conectar las rutas de la API
 app.use('/api/items', itemRoutes); // Todas las rutas de items bajo /api/items
 app.use('/api/formulaciones', formulacionesRoutes);
+app.use('/api/clientes', clientesRoutes);
 
 // Ruta de prueba (opcional)
 app.get('/', (req, res) => {
