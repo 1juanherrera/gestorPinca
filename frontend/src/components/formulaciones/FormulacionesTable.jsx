@@ -1,6 +1,6 @@
 import { FaFlask, FaWeight, FaDollarSign } from 'react-icons/fa';
 import { MdScience } from 'react-icons/md';
-import { formatoPesoColombiano, formatoCantidad } from '../utils/formatters';
+import { formatoPesoColombiano, formatoCantidad } from '../../utils/formatters';
 
 export const FormulacionesTable = ({ 
     formulaciones, 

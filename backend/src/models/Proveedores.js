@@ -79,7 +79,7 @@ class Proveedores {
         const query = `
             UPDATE proveedores 
             SET nombre_encargado = ?, nombre_empresa = ?, numero_documento = ?, 
-                direccion = ?, telefono = ?, email = CURRENT_TIMESTAMP
+                direccion = ?, telefono = ?, email = ?
             WHERE id = ?
         `;
         

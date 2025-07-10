@@ -23,7 +23,7 @@ export const ProveedorCard = ({ proveedor, onEdit, onDelete, onView }) => {
                     <div className="flex items-center gap-1">
                         <button
                             onClick={() => onEdit(proveedor)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-2 text-blue-600 cursor-pointer hover:bg-blue-300 bg-blue-100 rounded-lg transition-colors"
                             title="Editar proveedor"
                         >
                             <FaEdit size={14} />
@@ -31,7 +31,7 @@ export const ProveedorCard = ({ proveedor, onEdit, onDelete, onView }) => {
                         {onView && (
                             <button
                                 onClick={() => onView(proveedor)}
-                                className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                                className="p-2 text-green-600 hover:bg-green-300 bg-green-100 rounded-lg transition-colors"
                                 title="Ver detalles"
                             >
                                 <FaEye size={14} />
@@ -39,7 +39,7 @@ export const ProveedorCard = ({ proveedor, onEdit, onDelete, onView }) => {
                         )}
                         <button
                             onClick={() => onDelete(proveedor)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-2 text-red-600 hover:bg-red-300 cursor-pointer bg-red-100 rounded-lg transition-colors"
                             title="Eliminar proveedor"
                         >
                             <FaTrash size={14} />
@@ -52,7 +52,7 @@ export const ProveedorCard = ({ proveedor, onEdit, onDelete, onView }) => {
                     <div className="flex items-center gap-2 mb-3">
                         <FaUser className="text-gray-400" size={14} />
                         <span className="text-sm text-gray-700">
-                            {proveedor.nombre_encargado}
+                            {proveedor.nombre} 
                         </span>
                     </div>
                 )}

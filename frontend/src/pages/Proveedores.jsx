@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { FaUserTag, FaPlus, FaSearch, FaEdit, FaTrash, FaBuilding, FaEnvelope, FaPhone } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaUserTag, FaPlus, FaSearch, FaEdit, FaTrash, FaBuilding, FaEnvelope, FaPhone, FaArrowLeft, FaBox } from "react-icons/fa";
+import { AiFillProduct } from "react-icons/ai";
 import { useProveedores } from "../hooks/useProveedores";
-import { ProveedorModal } from "../components/ProveedorModal";
-import { ProveedorCard } from "../components/ProveedorCard";
+import { ProveedorModal } from "../components/proveedor/ProveedorModal";
+import { ProveedorCard } from "../components/proveedor/ProveedorCard";
+import { ItemProveedorModal } from "../components/proveedor/ItemProveedorModal"; // ← NUEVO
+import { ItemProveedorCard } from "../components/proveedor/ItemProveedorCard"; // ← NUEVO
+import { useItemProveedores } from "../hooks/useItemProveedores"; // ← NUEVO
 
 export const Proveedores = () => {
     const {
@@ -26,6 +30,20 @@ export const Proveedores = () => {
         clearSearch
     } = useProveedores();
 
+    // Hook de item-proveedores (NUEVO)
+    const {
+        itemProveedores,
+        loading: itemsLoading,
+        error: itemsError,
+        loadItemProveedores,
+        createNewItemProveedor,
+        updateExistingItemProveedor,
+        removeItemProveedor,
+        loadItemsByProveedor,
+        clearErrors: clearItemErrors
+    } = useItemProveedores();
+
+    // Estados existentes
     const [showModal, setShowModal] = useState(false);
     const [editingProveedor, setEditingProveedor] = useState(null);
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
@@ -33,9 +51,19 @@ export const Proveedores = () => {
     const [viewMode, setViewMode] = useState('grid');
     const [searchTerm, setSearchTerm] = useState('');
 
+    // Estados nuevos para item-proveedores
+    const [showItemModal, setShowItemModal] = useState(false);
+    const [editingItem, setEditingItem] = useState(null);
+    const [showItemConfirmDialog, setShowItemConfirmDialog] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
+    const [selectedProveedor, setSelectedProveedor] = useState(null);
+    const [showItemsView, setShowItemsView] = useState(false);
+
+    // useEffect existente
     useEffect(() => {
         loadProveedores();
-    }, [loadProveedores]);
+        loadItemProveedores(); // ← NUEVO: Cargar items también
+    }, [loadProveedores, loadItemProveedores]);
 
     // Manejar búsqueda
     const handleSearch = (e) => {
@@ -80,22 +108,23 @@ export const Proveedores = () => {
     };
 
     // Manejar envío del formulario
-    const handleSubmitProveedor = async (proveedorData) => {
-        let result;
-        
-        if (editingProveedor) {
-            result = await updateExistingProveedor(editingProveedor.id, proveedorData);
-        } else {
-            result = await createNewProveedor(proveedorData);
-        }
+    const handleSubmitProveedor = async (proveedorData) => {    
+    let result;
 
-        if (result.success) {
-            setShowModal(false);
-            setEditingProveedor(null);
-        }
+    if (editingProveedor) {
+        result = await updateExistingProveedor(editingProveedor.id, proveedorData);
+    } else {
+        result = await createNewProveedor(proveedorData);
+    }
 
-        return result;
-    };
+    if (result.success) {
+        setShowModal(false);
+        setEditingProveedor(null);
+        await loadProveedores();
+    }
+
+    return result;
+};
 
     // Manejar ordenamiento
     const handleSort = (sortBy) => {
@@ -106,10 +135,86 @@ export const Proveedores = () => {
     // Datos a mostrar
     const displayProveedores = filters.searchTerm && searchResults.length > 0 ? searchResults : paginatedProveedores;
 
-    console.log('🔍 VISTA - paginatedProveedores:', paginatedProveedores);
-    console.log('🔍 VISTA - searchResults:', searchResults);
-    console.log('🔍 VISTA - filters.searchTerm:', filters.searchTerm);
-    console.log('🔍 VISTA - displayProveedores:', displayProveedores);
+    // ========== NUEVOS HANDLERS PARA ITEM-PROVEEDORES ==========
+
+    // Ver productos del proveedor
+    const handleViewProveedorItems = async (proveedor) => {
+        setSelectedProveedor(proveedor);
+        setShowItemsView(true);
+        // Cargar items específicos del proveedor
+        await loadItemsByProveedor(proveedor.id);
+    };
+
+    // Crear nuevo item
+    const handleCreateItem = () => {
+        setEditingItem(null);
+        setShowItemModal(true);
+    };
+
+    // Editar item
+    const handleEditItem = (item) => {
+        setEditingItem(item);
+        setShowItemModal(true);
+    };
+
+    // Eliminar item
+    const handleDeleteItem = (item) => {
+        setItemToDelete(item);
+        setShowItemConfirmDialog(true);
+    };
+
+    // Ver detalles del item
+    const handleViewItem = (item) => {
+        setEditingItem(item);
+        setShowItemModal(true);
+    };
+
+    // Confirmar eliminación de item
+    const confirmDeleteItem = async () => {
+        if (itemToDelete) {
+            const result = await removeItemProveedor(itemToDelete.id);
+            if (result.success) {
+                setShowItemConfirmDialog(false);
+                setItemToDelete(null);
+                // Recargar items si estamos viendo los de un proveedor específico
+                if (selectedProveedor) {
+                    await loadItemsByProveedor(selectedProveedor.id);
+                } else {
+                    await loadItemProveedores();
+                }
+            }
+        }
+    };
+
+    // Manejar envío del formulario de item
+    const handleSubmitItem = async (itemData) => {
+        let result;
+
+        if (editingItem) {
+            result = await updateExistingItemProveedor(editingItem.id, itemData);
+        } else {
+            result = await createNewItemProveedor(itemData);
+        }
+
+        if (result.success) {
+            setShowItemModal(false);
+            setEditingItem(null);
+            // Recargar items
+            if (selectedProveedor) {
+                await loadItemsByProveedor(selectedProveedor.id);
+            } else {
+                await loadItemProveedores();
+            }
+        }
+
+        return result;
+    };
+
+    // Volver a la vista de proveedores
+    const handleBackToProveedores = () => {
+        setShowItemsView(false);
+        setSelectedProveedor(null);
+    };
 
     return (
         <div className="ml-65 p-4 bg-gray-100 min-h-screen">
@@ -122,9 +227,6 @@ export const Proveedores = () => {
                             <h1 className="text-2xl font-bold text-gray-800">
                                 Gestión de Proveedores
                             </h1>
-                            <p className="text-gray-600">
-                                Administra la información de tus proveedores
-                            </p>
                         </div>
                     </div>
                     <button
@@ -162,17 +264,17 @@ export const Proveedores = () => {
                         </div>
                     </div>
                     
-                    <div className="bg-white p-4 rounded-lg shadow">
+                    <button 
+                        onClick={() => setShowItemsView(true)}
+                        className="bg-purple-400 border-none cursor-pointer hover:bg-purple-600 p-4 rounded-lg shadow"
+                    >
                         <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-gray-600 text-sm">Promedio Productos</p>
-                                <p className="text-2xl font-bold text-orange-600">
-                                    {estadisticasGenerales?.promedioProductosPorProveedor || 0}
-                                </p>
+                            <p className="font-bold text-white">Ver Productos</p>
+                            <div className="p-4 rounded-full bg-purple-300">
+                                <AiFillProduct className="text-purple-600" size={24}/>
                             </div>
-                            <FaSearch className="text-orange-500" size={24} />
                         </div>
-                    </div>
+                    </button>
                 </div>
             </div>
 
@@ -275,17 +377,15 @@ export const Proveedores = () => {
                             {/* Vista de tarjetas */}
                             {viewMode === 'grid' && (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {displayProveedores.map((proveedor, index) => {
-                                        console.log(`🔍 CARD ${index}:`, proveedor); // ← AGREGA ESTE LOG
-                                        return (
-                                            <ProveedorCard
-                                                key={proveedor.id}
-                                                proveedor={proveedor}
-                                                onEdit={handleEditProveedor}
-                                                onDelete={handleDeleteProveedor}
-                                            />
-                                        );
-                                    })}
+                                    {displayProveedores.map((proveedor) => (
+                                        <ProveedorCard
+                                            key={proveedor.id}
+                                            proveedor={proveedor}
+                                            onEdit={handleEditProveedor}
+                                            onDelete={handleDeleteProveedor}
+                                            onViewItems={handleViewProveedorItems} // ← NUEVO
+                                        />
+                                    ))}
                                 </div>
                             )}
 
@@ -411,7 +511,126 @@ export const Proveedores = () => {
                 </>
             )}
 
-            {/* Modal de proveedor */}
+            {/* ========== VISTA DE ITEM-PROVEEDORES ========== */}
+            {showItemsView && (
+                <div className="fixed inset-0 bg-gray-100 z-40 overflow-y-auto">
+                    <div className="p-4">
+                        {/* Header de Items */}
+                        <div className="mb-6">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        onClick={handleBackToProveedores}
+                                        className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+                                        title="Volver a proveedores"
+                                    >
+                                        <FaArrowLeft className="text-gray-600" size={20} />
+                                    </button>
+                                    <FaBox className="text-green-500" size={25} />
+                                    <div>
+                                        <h1 className="text-2xl font-bold text-gray-800">
+                                            {selectedProveedor 
+                                                ? `Items de ${selectedProveedor.nombre_empresa}`
+                                                : 'Gestión de Items'
+                                            }
+                                        </h1>
+                                        <p className="text-gray-600">
+                                            {selectedProveedor 
+                                                ? `Productos suministrados por ${selectedProveedor.nombre_empresa}`
+                                                : 'Administra todos los items de tus proveedores'
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={handleCreateItem}
+                                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                                >
+                                    <FaPlus size={16} />
+                                    Nuevo Item
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Manejo de errores de items */}
+                        {itemsError && (
+                            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center justify-between">
+                                <span>{itemsError}</span>
+                                <button
+                                    onClick={clearItemErrors}
+                                    className="text-red-500 hover:text-red-700"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Contenido de Items */}
+                        {itemsLoading ? (
+                            <div className="flex justify-center items-center py-12">
+                                <div className="animate-spin rounded-full h-8 w-8 border-2 border-green-500 border-t-transparent"></div>
+                                <span className="ml-2 text-gray-600">Cargando items...</span>
+                            </div>
+                        ) : (
+                            <>
+                                {itemProveedores.length === 0 ? (
+                                    <div className="bg-white p-8 rounded-lg shadow text-center">
+                                        <FaBox className="mx-auto text-gray-400 mb-4" size={48} />
+                                        <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                            No hay items
+                                        </h3>
+                                        <p className="text-gray-600 mb-4">
+                                            {selectedProveedor 
+                                                ? `${selectedProveedor.nombre_empresa} aún no tiene items registrados.`
+                                                : 'Comienza agregando el primer item.'
+                                            }
+                                        </p>
+                                        <button
+                                            onClick={handleCreateItem}
+                                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2"
+                                        >
+                                            <FaPlus size={16} />
+                                            Crear Primer Item
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex justify-center items-center">
+                                        <table className="table-auto max-w-350 bg-white rounded-lg shadow overflow-hidden">
+                                            <thead>
+                                                <tr>
+                                                    <th className="w-200 px-4 py-2 text-center text-sm font-semibold text-black bg-gray-100">Nombre</th>
+                                                    <th className="px-4 py-2 text-center text-sm font-semibold text-black bg-gray-100">Código</th>
+                                                    <th className="w-50 px-4 py-2 text-center text-sm font-semibold text-black bg-gray-100">Proveedor</th>
+                                                    <th className="w-30 px-4 py-2 text-center text-sm font-semibold text-black bg-gray-100">Precio</th>
+                                                    <th className="w-30 px-4 py-2 text-center text-sm font-semibold text-black bg-gray-100">Precio con IVA</th>
+                                                    <th className="w-30 px-4 py-2 text-center text-sm font-semibold text-black bg-gray-100">Unidad</th>
+                                                    <th className="w-20 px-4 py-2 text-center text-sm font-semibold text-black bg-gray-100">Stock</th>
+                                                    <th className="w-20 px-4 py-2 text-center text-sm font-semibold text-black bg-gray-100">Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {itemProveedores.map(item => (
+                                                    <ItemProveedorCard
+                                                        key={item.id}
+                                                        itemProveedor={item}
+                                                        onEdit={handleEditItem}
+                                                        onDelete={handleDeleteItem}
+                                                        onView={handleViewItem}
+                                                    />
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* ========== MODALES Y DIÁLOGOS ========== */}
+
+            {/* Modal de proveedor (existente) */}
             {showModal && (
                 <ProveedorModal
                     proveedor={editingProveedor}
@@ -423,7 +642,20 @@ export const Proveedores = () => {
                 />
             )}
 
-            {/* Diálogo de confirmación simple */}
+            {/* Modal de item-proveedor (NUEVO) */}
+            {showItemModal && (
+                <ItemProveedorModal
+                    itemProveedor={editingItem}
+                    proveedores={paginatedProveedores} // Pasar lista de proveedores
+                    onSubmit={handleSubmitItem}
+                    onClose={() => {
+                        setShowItemModal(false);
+                        setEditingItem(null);
+                    }}
+                />
+            )}
+
+            {/* Diálogo de confirmación de proveedor (existente) */}
             {showConfirmDialog && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
@@ -439,12 +671,43 @@ export const Proveedores = () => {
                                     setShowConfirmDialog(false);
                                     setProveedorToDelete(null);
                                 }}
-                                className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg"
+                                className="px-4 py-2 text-black bg-gray-100 hover:bg-gray-200 rounded-lg"
                             >
                                 Cancelar
                             </button>
                             <button
                                 onClick={confirmDelete}
+                                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg"
+                            >
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Diálogo de confirmación de item (NUEVO) */}
+            {showItemConfirmDialog && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">
+                            Eliminar Item
+                        </h3>
+                        <p className="text-gray-600 mb-4">
+                            ¿Estás seguro de que deseas eliminar el item "{itemToDelete?.nombre_item}"?
+                        </p>
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => {
+                                    setShowItemConfirmDialog(false);
+                                    setItemToDelete(null);
+                                }}
+                                className="px-4 py-2 text-black bg-gray-100 hover:bg-gray-200 rounded-lg"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={confirmDeleteItem}
                                 className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg"
                             >
                                 Eliminar

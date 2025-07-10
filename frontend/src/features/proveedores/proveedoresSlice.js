@@ -6,12 +6,9 @@ export const fetchProveedores = createAsyncThunk(
     'proveedores/fetchProveedores',
     async (_, { rejectWithValue }) => {
         try {
-            console.log('📡 Llamando a API: proveedores');
-            const data = await apiService.get('proveedores'); // ← Cambiar aquí
-            console.log('📡 Respuesta de API:', data);
+            const data = await apiService.get('proveedores'); 
             return data;
         } catch (error) {
-            console.error('❌ fetchProveedores: Error:', error.message);
             return rejectWithValue(error.message || 'Error al obtener proveedores');
         }
     }
@@ -153,14 +150,10 @@ const proveedoresSlice = createSlice({
         builder
             // Fetch proveedores
             .addCase(fetchProveedores.pending, (state) => {
-                console.log('🟡 fetchProveedores PENDING');
                 state.loading = true;
                 state.error = null;
             })
             .addCase(fetchProveedores.fulfilled, (state, action) => {
-                console.log('🟢 fetchProveedores FULFILLED:', action.payload);
-                console.log('✅ REDUCER: fetchProveedores.fulfilled');
-                console.log('📦 Payload completo:', action.payload);
                 
                 // CORREGIR: Extraer los datos del objeto response
                 const datos = action.payload.data || action.payload;
@@ -169,11 +162,8 @@ const proveedoresSlice = createSlice({
                 state.proveedores = datos; // ← Guardar solo el array, no el objeto completo
                 state.pagination.totalItems = Array.isArray(datos) ? datos.length : 0;
                 state.error = null;
-                
-                console.log('💾 Proveedores guardados en estado:', state.proveedores);
             })
             .addCase(fetchProveedores.rejected, (state, action) => {
-                console.log('🔴 fetchProveedores REJECTED:', action.payload);
                 state.loading = false;
                 state.error = action.payload;
                 state.proveedores = [];

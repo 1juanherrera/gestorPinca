@@ -1,7 +1,7 @@
 import { FaDollarSign, FaFlask, FaBox, FaTag, FaPallet } from 'react-icons/fa';
 import { MdWork, MdCalculate } from 'react-icons/md';
 import { FaBottleWater } from "react-icons/fa6";
-import { formatoPesoColombiano } from '../utils/formatters';
+import { formatoPesoColombiano } from '../../utils/formatters';
 
 export const CostProductsTable = ({ 
     selectedProductData,
@@ -12,9 +12,9 @@ export const CostProductsTable = ({
         return (
             <div className="bg-white rounded-lg shadow-sm p-4 text-center">
                 <div className="text-gray-400 mb-3">
-                    <MdCalculate size={compact ? 32 : 48} className="mx-auto" />
+                    <MdCalculate size={48} className="mx-auto" />
                 </div>
-                <h3 className={`${compact ? 'text-base' : 'text-lg'} font-medium text-gray-900 mb-2`}>
+                <h3 className='text-lg font-medium text-gray-900 mb-2'>
                     Desglose de Costos
                 </h3>
                 <p className="text-sm text-gray-500">

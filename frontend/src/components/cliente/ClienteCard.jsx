@@ -13,7 +13,7 @@ import {
   FaExclamationTriangle,
   FaChartLine
 } from 'react-icons/fa';
-import { formatoPesoColombiano } from '../utils/formatters';
+import { formatoPesoColombiano } from '../../utils/formatters';
 
 export const ClienteCard = ({ cliente, onView, onEdit, onDelete }) => {
   // Usar los mismos campos que en las estadísticas del modal
@@ -47,14 +47,11 @@ export const ClienteCard = ({ cliente, onView, onEdit, onDelete }) => {
           
           {/* Estado del cliente */}
           <div className="flex flex-col items-end gap-1">
-            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-              Activo
-            </span>
             
             {/* Indicador de facturas pendientes */}
             {facturasPendientes === 0 && saldoPendiente > 0 && (
               <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                pendiente
+                Pendiente
               </span>
             )}
             
@@ -150,15 +147,15 @@ export const ClienteCard = ({ cliente, onView, onEdit, onDelete }) => {
 
               {/* Saldo Pendiente - Destacado */}
               <div className={`p-3 rounded-lg ${
-                saldoPendiente > 0 ? 'bg-yellow-50' : 'bg-green-50'
+                saldoPendiente > 0 ? 'bg-red-50' : 'bg-green-50'
               }`}>
                 <div className={`text-sm font-bold ${
-                  saldoPendiente > 0 ? 'text-yellow-600' : 'text-green-600'
+                  saldoPendiente > 0 ? 'text-red-600' : 'text-green-600'
                 }`}>
                   {formatoPesoColombiano(saldoPendiente)}
                 </div>
                 <div className={`text-xs ${
-                  saldoPendiente > 0 ? 'text-yellow-800' : 'text-green-800'
+                  saldoPendiente > 0 ? 'text-red-800' : 'text-green-800'
                 }`}>
                   Saldo Pendiente
                 </div>

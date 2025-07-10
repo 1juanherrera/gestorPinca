@@ -14,8 +14,8 @@ import {
   FaSpinner
 } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
-import { selectClienteConFacturas, selectClienteConPagos, selectClienteEstadisticas } from '../features/clientes/clientesSlice';
-import { formatoPesoColombiano } from '../utils/formatters';
+import { selectClienteConFacturas, selectClienteConPagos, selectClienteEstadisticas } from '../../features/clientes/clientesSlice';
+import { formatoPesoColombiano } from '../../utils/formatters';
 
 export const ClienteModal = ({ isOpen, onClose, mode, cliente, onSave }) => {
 

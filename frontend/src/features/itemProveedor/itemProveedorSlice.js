@@ -202,15 +202,14 @@ const initialState = {
 
 // Slice
 const itemProveedorSlice = createSlice({
-    name: 'itemProveedor',
+    name: 'itemProveedores',
     initialState,
     reducers: {
         clearError: (state) => {
             state.error = null;
-            state.searchError = null;
         },
-        clearCurrentItem: (state) => {
-            state.currentItem = null;
+        clearCurrentItemProveedor: (state) => {
+            state.currentItemProveedor = null;
         },
         setFilters: (state, action) => {
             state.filters = { ...state.filters, ...action.payload };
@@ -350,12 +349,10 @@ const itemProveedorSlice = createSlice({
 
 export const {
     clearError,
-    clearCurrentItem,
+    clearCurrentItemProveedor,
     setFilters,
     setPagination,
-    clearSearchResults,
-    setSearchTerm,
-    clearSearchTerm
+    clearSearchResults
 } = itemProveedorSlice.actions;
 
 export default itemProveedorSlice.reducer;

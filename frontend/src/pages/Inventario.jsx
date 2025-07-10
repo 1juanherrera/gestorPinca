@@ -1,5 +1,5 @@
-import { Table } from "../components/Table"; 
-import { ItemForm } from "../components/ItemForm"; 
+import { Table } from "../components/inventario/TableInventario"; 
+import { ItemForm } from "../components/inventario/ItemForm"; 
 import { SearchBar } from "../components/SearchBar";
 import { useInventario } from "../hooks/useInventario";
 import { MdAddCircleOutline } from "react-icons/md";

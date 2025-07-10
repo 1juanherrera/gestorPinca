@@ -12,10 +12,10 @@ import {
   
 } from 'react-icons/fa';
 import { useClientes } from '../hooks/useClientes';
-import { ClienteModal } from '../components/ClienteModal';
-import { ClienteCard } from '../components/ClienteCard';
-import { ClienteStats } from '../components/ClienteStats';
-import { DeleteConfirmModal } from '../components/DeleteConfirmModal';
+import { ClienteModal } from '../components/cliente/ClienteModal';
+import { ClienteCard } from '../components/cliente/ClienteCard';
+import { ClienteStats } from '../components/cliente/ClienteStats';
+import { DeleteConfirmModal } from '../components/cliente/DeleteConfirmModal';
 
 export const Clientes = () => {
 
@@ -92,7 +92,7 @@ export const Clientes = () => {
             <div className="flex flex-col sm:flex-row gap-3 mb-4">
               <button
                 onClick={abrirModalCrear}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="cursor-pointer flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <FaPlus size={16} />
                 Nuevo Cliente
@@ -125,7 +125,7 @@ export const Clientes = () => {
               <div className="flex rounded-lg border border-gray-300 overflow-hidden">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`px-3 py-1 text-sm ${
+                  className={`px-3 py-1 text-sm cursor-pointer ${
                     viewMode === 'grid' 
                       ? 'bg-blue-600 text-white' 
                       : 'bg-white text-gray-600 hover:bg-gray-50'
@@ -135,7 +135,7 @@ export const Clientes = () => {
                 </button>
                 <button
                   onClick={() => setViewMode('table')}
-                  className={`px-3 py-1 text-sm ${
+                  className={`px-3 py-1 text-sm cursor-pointer ${
                     viewMode === 'table' 
                       ? 'bg-blue-600 text-white' 
                       : 'bg-white text-gray-600 hover:bg-gray-50'
@@ -155,7 +155,7 @@ export const Clientes = () => {
               <p className="text-red-800">{error}</p>
               <button
                 onClick={limpiarError}
-                className="text-red-600 hover:text-red-800"
+                className="text-red-600 cursor-pointer hover:text-red-800"
               >
                 ✕
               </button>
@@ -183,7 +183,7 @@ export const Clientes = () => {
             {!searchTerm && (
               <button
                 onClick={abrirModalCrear}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="inline-flex cursor-pointer items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <FaPlus size={16} />
                 Crear primer cliente
@@ -273,14 +273,14 @@ export const Clientes = () => {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => handleViewDetails(cliente)}
-                            className="text-blue-600 hover:text-blue-900 p-1"
+                            className="text-blue-600 hover:text-blue-900 p-1 cursor-pointer"
                             title="Ver detalles"
                           >
                             <FaEye size={14} />
                           </button>
                           <button
                             onClick={() => abrirModalEditar(cliente)}
-                            className="text-green-600 hover:text-green-900 p-1"
+                            className="text-green-600 hover:text-green-900 p-1 cursor-pointer"
                             title="Editar"
                           >
                             <FaEdit size={14} />

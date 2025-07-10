@@ -118,7 +118,7 @@ export const ProveedorModal = ({ proveedor, onSubmit, onClose }) => {
                         <div className="md:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                 <FaBuilding className="inline mr-2" size={14} />
-                                Nombre de la Empresa *
+                                Nombre de la Empresa <span className='text-red-600'>*</span>
                             </label>
                             <input
                                 type="text"
@@ -139,7 +139,7 @@ export const ProveedorModal = ({ proveedor, onSubmit, onClose }) => {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                 <FaUser className="inline mr-2" size={14} />
-                                Nombre del Encargado
+                                Nombre del Encargado <span className='text-red-600'>*</span>
                             </label>
                             <input
                                 type="text"

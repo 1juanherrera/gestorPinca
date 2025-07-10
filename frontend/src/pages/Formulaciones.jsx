@@ -1,14 +1,14 @@
 import { useFormulaciones } from '../hooks/useFormulaciones';
 import { useCostCalculator } from '../hooks/useCostCalculator';
-import { ProductSelect } from '../components/ProductSelect';
-import { FormulacionesTable } from '../components/FormulacionesTable';
-import { CostCalculator } from '../components/CostCalculator';
-import { ProductSpecificationsTable } from '../components/ProductSpecificationsTable';
+import { ProductSelect } from '../components/formulaciones/ProductSelect';
+import { FormulacionesTable } from '../components/formulaciones/FormulacionesTable';
+import { CostCalculator } from '../components/formulaciones/CostCalculator';
+import { ProductSpecificationsTable } from '../components/formulaciones/ProductSpecificationsTable';
 import { FaFlask, FaChartPie, FaSpinner, FaCube } from 'react-icons/fa';
 import { MdScience } from 'react-icons/md';
 import { useState, useEffect } from 'react';
 import { formatoCantidad } from '../utils/formatters';
-import { CostProductsTable } from '../components/CostProductsTable';
+import { CostProductsTable } from '../components/formulaciones/CostProductsTable';
 
 export const Formulaciones = () => {
     const {

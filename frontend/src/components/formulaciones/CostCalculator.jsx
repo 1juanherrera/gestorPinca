@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaCalculator, FaSpinner, FaSave, FaUndo } from 'react-icons/fa';
 import { MdScience } from 'react-icons/md';
 import { RiFileExcel2Line } from "react-icons/ri";
-import { formatoPesoColombiano } from '../utils/formatters';
+import { formatoPesoColombiano } from '../../utils/formatters';
 
 export const CostCalculator = ({ 
     selectedProductData, 

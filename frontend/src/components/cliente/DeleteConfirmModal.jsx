@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaTimes, FaTrash, FaExclamationTriangle } from 'react-icons/fa';
 
 export const DeleteConfirmModal = ({ 
